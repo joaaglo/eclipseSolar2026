@@ -58,11 +58,8 @@ export const SOUTH_LIMIT = [
   [40.6833, -4.04],
 ]
 
-// Polygon: all north limit points → south limit reversed (last 2 anomalous rows excluded)
-// At 18:30-18:32 the shadow grazes Earth at sunset causing extreme coord divergence.
-// Keeping all NORTH_LIMIT points is critical — removing the easternmost one (Barcelona)
-// causes a self-intersecting polygon that Leaflet won't fill.
+// Polygon: north limit forward + south limit reversed (all points)
 export const BAND_POLYGON = [
   ...NORTH_LIMIT,
-  ...[...SOUTH_LIMIT.slice(0, 44)].reverse(),
+  ...[...SOUTH_LIMIT].reverse(),
 ]

@@ -21,8 +21,8 @@ async function fetchBatch(origin, batch) {
     ...batch.map(s => `${s.lng},${s.lat}`),
   ].join(';')
 
-  const destIndices = batch.map((_, i) => i + 1).join(',')
-  // Only request duration — distance annotation is not reliably available on the public server
+  // OSRM Table API uses semicolons as separators for sources/destinations indices
+  const destIndices = batch.map((_, i) => i + 1).join(';')
   const url = `${OSRM_BASE}/${coords}?sources=0&destinations=${destIndices}&annotations=duration`
 
   const res = await fetch(url)
