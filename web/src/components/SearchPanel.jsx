@@ -1,3 +1,4 @@
+import { useRef, useEffect } from 'react'
 import ShareButton from './ShareButton'
 import ResultsList from './ResultsList'
 
@@ -21,6 +22,20 @@ export default function SearchPanel({
   onSiteClick,
   geoLoading, geoError, requestGeo,
 }) {
+  const userClickedGeo = useRef(false)
+
+  useEffect(() => {
+    if (geoError && userClickedGeo.current) {
+      window.alert('No se pudo obtener tu ubicación.\n\nPuede que no hayas dado permiso al navegador. Haz clic en el mapa para elegir tu punto de salida.')
+      userClickedGeo.current = false
+    }
+  }, [geoError])
+
+  const handleGeoClick = () => {
+    userClickedGeo.current = true
+    requestGeo()
+  }
+
   return (
     <div className="panel">
 
@@ -39,14 +54,17 @@ export default function SearchPanel({
           <span className="calc-step__num">1</span>
           <div className="calc-step__body">
             <p className="calc-step__label">Dinos de dónde sales</p>
-            <button className="btn btn--secondary" onClick={requestGeo} disabled={geoLoading}>
-              {geoLoading ? 'Localizando…' : '📍 Usar mi ubicación GPS'}
-            </button>
-            {origin
-              ? <p className="panel__coords">{origin.lat.toFixed(4)}, {origin.lng.toFixed(4)}</p>
-              : <p className="panel__hint">Haz clic en el mapa o usa el GPS</p>
-            }
-            {geoError && !origin && <p className="panel__error">{geoError}</p>}
+            <div className="location-row">
+              <button className="btn btn--secondary btn--location" onClick={handleGeoClick} disabled={geoLoading}>
+                {geoLoading ? 'Localizando…' : '📍 Usar mi ubicación GPS'}
+              </button>
+              {origin && (
+                <span className="panel__coords">
+                  {origin.lat.toFixed(4)}, {origin.lng.toFixed(4)}
+                </span>
+              )}
+            </div>
+            {!origin && <p className="panel__hint">o haz clic en el mapa</p>}
           </div>
         </div>
 

@@ -156,8 +156,23 @@ html, body, #root {
 
 .btn--full { width: 100%; margin: 0; }
 
+.btn--location {
+  width: auto;
+  margin: 0;
+  padding: 7px 12px;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+.location-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
 .calc-step__time {
-  font-size: 18px;
+  font-size: 15px;
   font-weight: 700;
   color: #1a3a6b;
   margin: 2px 0 6px;
