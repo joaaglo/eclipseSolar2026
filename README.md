@@ -10,23 +10,28 @@ La franja de totalidad atraviesa de oeste a este: Galicia → Asturias → Canta
 
 ## Fuente de datos
 
-Lista oficial de **190 sitios de observación** extraída del widget de El País (junio 2026), basada en los datos de la Comisión Interministerial Trío de Eclipses (trioeclipses.es).
+Lista oficial de **190 sitios de observación** extraída del widget de El País (junio 2026), basada en los datos de la Comisión Interministerial Trío de Eclipses (trioeclipses.es) y el IGN. La duración de totalidad es específica para las coordenadas de cada sitio.
 
 ## Archivos
 
 | Archivo | Descripción |
 |---|---|
-| `eclipse_sitios.csv` | 190 sitios con tipo, capacidad, parking, hora de inicio y duración de totalidad. Distancia por carretera y tiempo pendientes (ver abajo). |
-| `get_routes.py` | Script Python que consulta OSRM (OpenStreetMap, sin API key) para calcular distancia real por carretera y tiempo estimado en coche desde Alboraya para los 190 sitios. Genera `eclipse_sitios_rutas.csv`. |
+| `sites.json` | 190 sitios con coordenadas, tipo, capacidad, parking, hora de inicio y duración de totalidad. |
+| `eclipse.py` | Script principal con CLI. Calcula rutas OSRM y distancia a la línea central. |
+| `eclipse_sitios.csv` | Copia de referencia original. No se usa en el proceso. |
+| `output/eclipse_sitios_rutas.csv` | Output generado con todas las columnas. |
+| `output/eclipse_sitios_rutas.xlsx` | Ídem en Excel con filtros y formato. |
 
 ## Uso
 
 ```bash
-cd eclipseSolar
-python get_routes.py
+python eclipse.py all           # rutas OSRM + distancia a centerline
+python eclipse.py all --xlsx    # ídem + genera Excel
+python eclipse.py --help        # ayuda
 ```
 
-Requiere Python 3 y conexión a internet. Hace ~190 llamadas a `router.project-osrm.org` con 300ms de pausa. Tiempo estimado: ~1 minuto. Output: `eclipse_sitios_rutas.csv`.
+Requiere Python 3 y conexión a internet (~1 minuto para las 190 rutas).
+Para el Excel: `pip install openpyxl pandas`.
 
 ## Sitios más cercanos a Alboraya con totalidad
 
