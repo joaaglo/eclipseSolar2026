@@ -1,16 +1,31 @@
-# React + Vite
+# La Vueltita · Eclipse Solar 2026
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Planificador interactivo para el eclipse solar total del **12 de agosto de 2026** observable desde España.
 
-Currently, two official plugins are available:
+## Qué hace
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- Muestra la banda de totalidad del eclipse sobre un mapa interactivo (datos NASA)
+- Marca los 190 sitios oficiales de observación (fuente: El País / IGN), coloreados por duración de totalidad
+- Calcula desde tu posición (GPS o clic en el mapa) cuáles son los mejores sitios accesibles en el tiempo que elijas
+- Comparte el resultado por WhatsApp o Twitter
 
-## React Compiler
+## Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+React + Vite · react-leaflet · OpenStreetMap · OSRM (routing)
 
-## Expanding the ESLint configuration
+## Desarrollo local
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+```bash
+npm install
+npm run dev
+```
+
+## Datos
+
+- Sitios de observación: `public/sites.json` (190 entradas, fuente El País / IGN)
+- Banda de totalidad: `src/data/eclipseBand.js` (coordenadas NASA GSFC)
+- Rutas: OSRM public demo server (no comercial, sin API key)
+
+## Aviso
+
+Los tiempos de desplazamiento son orientativos (OSRM, tráfico estándar). No reflejan las condiciones reales el día del eclipse ni la disponibilidad de plazas en cada sitio.

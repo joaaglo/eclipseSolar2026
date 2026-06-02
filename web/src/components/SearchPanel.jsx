@@ -1,6 +1,14 @@
 import ShareButton from './ShareButton'
 import ResultsList from './ResultsList'
 
+function formatMinutes(mins) {
+  const h = Math.floor(mins / 60)
+  const m = mins % 60
+  if (h === 0) return `${m} min`
+  if (m === 0) return `${h}h`
+  return `${h}h ${m}min`
+}
+
 export default function SearchPanel({
   origin, setOrigin,
   maxMinutes, setMaxMinutes,
@@ -16,6 +24,7 @@ export default function SearchPanel({
       <div className="panel__header">
         <h1 className="panel__title">Eclipse Solar 2026</h1>
         <p className="panel__subtitle">12 de agosto · España</p>
+        <p className="panel__desc">¿Cuál es el mejor sitio para ver el eclipse cerca de ti? Dinos de dónde sales y cuánto tiempo tienes — nosotros calculamos la mejor opción.</p>
       </div>
 
       <div className="panel__section">
@@ -41,19 +50,19 @@ export default function SearchPanel({
 
       <div className="panel__section">
         <label className="panel__label">
-          Tiempo máximo de desplazamiento: <strong>{maxMinutes} min</strong>
+          Tiempo máximo: <strong>{formatMinutes(maxMinutes)}</strong>
         </label>
         <input
           type="range"
-          min={30}
+          min={15}
           max={300}
-          step={10}
+          step={15}
           value={maxMinutes}
           onChange={e => setMaxMinutes(+e.target.value)}
           className="panel__slider"
         />
         <div className="panel__slider-labels">
-          <span>30 min</span><span>5h</span>
+          <span>15 min</span><span>5h</span>
         </div>
       </div>
 

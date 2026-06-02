@@ -56,6 +56,13 @@ html, body, #root {
   margin-top: 2px;
 }
 
+.panel__desc {
+  font-size: 12px;
+  opacity: 0.75;
+  margin-top: 10px;
+  line-height: 1.5;
+}
+
 .panel__section {
   padding: 14px 18px;
   border-bottom: 1px solid #f0f0f0;
@@ -251,19 +258,22 @@ html, body, #root {
 }
 
 .share__btn {
-  flex: 1;
-  min-width: 80px;
-  padding: 7px 10px;
-  border-radius: 5px;
-  font-size: 12px;
-  font-weight: 600;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
   cursor: pointer;
   text-align: center;
   text-decoration: none;
   border: none;
-  transition: opacity 0.15s;
+  transition: opacity 0.15s, transform 0.1s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
-.share__btn:hover { opacity: 0.85; }
+.share__btn svg { width: 20px; height: 20px; }
+.share__btn:hover { opacity: 0.85; transform: scale(1.08); }
+.share__btn:active { transform: scale(0.95); }
 
 .share__btn--copy { background: #e8eef8; color: #1a3a6b; }
 .share__btn--whatsapp { background: #25d366; color: #fff; }

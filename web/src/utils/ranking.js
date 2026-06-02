@@ -21,8 +21,8 @@ export function getBestSites(durations, distances, sites, maxMinutes) {
 
   const withTravel = sites.map((site, i) => ({
     ...site,
-    travelSecs: durations[i + 1] ?? null,
-    travelKm: distances ? Math.round((distances[i + 1] ?? 0) / 100) / 10 : null,
+    travelSecs: durations[i] ?? null,
+    travelKm: distances ? Math.round((distances[i] ?? 0) / 100) / 10 : null,
   })).filter(s => s.travelSecs !== null)
 
   const sorter = (a, b) => parseDuration(b.duracion_totalidad) - parseDuration(a.duracion_totalidad)
