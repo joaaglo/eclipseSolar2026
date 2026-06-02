@@ -224,10 +224,21 @@ def get_route(dest_lat, dest_lng):
         dist_km = round(route["distance"] / 1000, 1)
         dur_min = round(route["duration"] / 60)
         h, m = divmod(dur_min, 60)
-        dur_str = f"{h}h {m:02d}min" if h else f"{m}min"
+        dur_str = f"{h:02d}h {m:02d}min"
         return dist_km, dur_str
     except Exception as e:
         return None, f"ERROR: {e}"
+
+def normalize_dur(dur):
+    """Convierte '1m 33s', '51s', '1m 00s', '1m' a formato '0m 00s' o '1m 33s'."""
+    import re
+    dur = dur.strip()
+    m = re.match(r'(?:(\d+)m\s*)?(?:(\d+)s)?$', dur)
+    if not m:
+        return dur
+    mins = int(m.group(1)) if m.group(1) else 0
+    secs = int(m.group(2)) if m.group(2) else 0
+    return f"{mins}m {secs:02d}s"
 
 def main():
     out = []
@@ -244,18 +255,21 @@ def main():
             "Capacidad": cap,
             "Parking": park,
             "Inicio totalidad": inicio,
-            "Duración totalidad": dur,
+            "Duración totalidad": normalize_dur(dur),
+            "Lat": lat,
+            "Lng": lng,
             "Dist_carretera_km": dist_km if dist_km else "",
             "Tiempo_Maps": dur_str,
         })
         time.sleep(0.3)  # ser amables con OSRM
 
-    with open("eclipse_sitios_rutas.csv", "w", newline="", encoding="utf-8") as f:
+    out_path = "output/eclipse_sitios_rutas.csv"
+    with open(out_path, "w", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=list(out[0].keys()))
         w.writeheader()
         w.writerows(out)
 
-    print(f"\nListo. Guardado en eclipse_sitios_rutas.csv")
+    print(f"\nListo. Guardado en {out_path}")
 
 if __name__ == "__main__":
     main()
