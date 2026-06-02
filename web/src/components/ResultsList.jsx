@@ -1,4 +1,4 @@
-import { formatTravel } from '../utils/ranking'
+import { formatTravel, durationColor } from '../utils/ranking'
 
 export default function ResultsList({ results, onSiteClick }) {
   if (!results) return null
@@ -54,7 +54,9 @@ function SiteCard({ site, rank, bonus, onClick }) {
         <span>{site.municipio}</span>
         <div className="site-card__dur-block">
           <span className="site-card__dur-label">eclipse total</span>
-          <span className="site-card__duration">🌑 {site.duracion_totalidad}</span>
+          <span className="site-card__duration" style={{ color: durationColor(site.duracion_totalidad) }}>
+            🌑 {site.duracion_totalidad}
+          </span>
         </div>
       </div>
       <div className="site-card__travel">

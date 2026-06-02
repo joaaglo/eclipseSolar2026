@@ -17,7 +17,7 @@ export function durationColor(durationStr) {
 
 export function getBestSites(durations, distances, sites, maxMinutes) {
   const maxSecs = maxMinutes * 60
-  const bonusBuffer = 10 * 60
+  const bonusBuffer = 15 * 60
 
   const withTravel = sites.map((site, i) => ({
     ...site,

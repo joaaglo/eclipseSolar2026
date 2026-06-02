@@ -54,17 +54,13 @@ export default function SearchPanel({
           <span className="calc-step__num">1</span>
           <div className="calc-step__body">
             <p className="calc-step__label">Dinos de dónde sales</p>
-            <div className="location-row">
-              <button className="btn btn--secondary btn--location" onClick={handleGeoClick} disabled={geoLoading}>
-                {geoLoading ? 'Localizando…' : '📍 Usar mi ubicación GPS'}
-              </button>
-              {origin && (
-                <span className="panel__coords">
-                  {origin.lat.toFixed(4)}, {origin.lng.toFixed(4)}
-                </span>
-              )}
-            </div>
-            {!origin && <p className="panel__hint">o haz clic en el mapa</p>}
+            <button className="btn btn--secondary btn--gps" onClick={handleGeoClick} disabled={geoLoading}>
+              {geoLoading ? 'Localizando…' : '📍 Usar mi ubicación GPS'}
+            </button>
+            {origin
+              ? <p className="panel__coords">{origin.lat.toFixed(4)}, {origin.lng.toFixed(4)}</p>
+              : <p className="panel__hint">o haz clic en el mapa</p>
+            }
           </div>
         </div>
 

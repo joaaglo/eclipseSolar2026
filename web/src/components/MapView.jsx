@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { MapContainer, TileLayer, useMapEvents, CircleMarker } from 'react-leaflet'
+import { MapContainer, TileLayer, useMapEvents, useMap, CircleMarker } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
 import EclipseBandLayer from './EclipseBandLayer'
 import SitesLayer from './SitesLayer'
@@ -9,7 +9,17 @@ function ClickHandler({ onMapClick }) {
   return null
 }
 
-export default function MapView({ origin, onMapClick, showBand, showSites, sites, results }) {
+function FlyToSite({ focusSite }) {
+  const map = useMap()
+  useEffect(() => {
+    if (!focusSite) return
+    const zoom = Math.max(map.getZoom(), 11)
+    map.flyTo([focusSite.site.lat, focusSite.site.lng], zoom, { duration: 1.2 })
+  }, [focusSite])
+  return null
+}
+
+export default function MapView({ origin, onMapClick, showBand, showSites, sites, results, focusSite }) {
   return (
     <MapContainer
       center={[43, -5]}
@@ -24,7 +34,7 @@ export default function MapView({ origin, onMapClick, showBand, showSites, sites
 
       {showBand && <EclipseBandLayer />}
       {showSites && sites.length > 0 && (
-        <SitesLayer sites={sites} results={results} />
+        <SitesLayer sites={sites} results={results} focusSite={focusSite?.site} />
       )}
 
       {origin && (
@@ -41,6 +51,7 @@ export default function MapView({ origin, onMapClick, showBand, showSites, sites
       )}
 
       <ClickHandler onMapClick={onMapClick} />
+      <FlyToSite focusSite={focusSite} />
     </MapContainer>
   )
 }

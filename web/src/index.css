@@ -79,16 +79,18 @@ html, body, #root {
 }
 
 .panel__coords {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
   color: #1a3a6b;
-  margin-top: 6px;
+  margin-top: 8px;
+  text-align: center;
 }
 
 .panel__hint {
   font-size: 12px;
   color: #999;
   margin-top: 6px;
+  text-align: center;
 }
 
 .panel__error {
@@ -156,19 +158,11 @@ html, body, #root {
 
 .btn--full { width: 100%; margin: 0; }
 
-.btn--location {
-  width: auto;
+.btn--gps {
+  width: 100%;
   margin: 0;
-  padding: 7px 12px;
-  font-size: 12px;
-  flex-shrink: 0;
-}
-
-.location-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
+  white-space: normal;
+  line-height: 1.4;
 }
 
 .calc-step__time {
@@ -335,7 +329,7 @@ html, body, #root {
 
 .site-card__duration {
   font-weight: 700;
-  color: #c0392b;
+  /* color applied inline via durationColor() to match map gradient */
 }
 
 .site-card__travel {
@@ -356,11 +350,12 @@ html, body, #root {
 /* Share */
 .share {
   display: flex;
-  gap: 6px;
+  gap: 8px;
   padding: 12px 18px;
   border-top: 1px solid #f0f0f0;
   flex-wrap: wrap;
   flex-shrink: 0;
+  justify-content: center;
 }
 
 .share__btn {

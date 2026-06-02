@@ -15,6 +15,7 @@ export default function App() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [focusSite, setFocusSite] = useState(null)
+  const handleSiteClick = site => setFocusSite({ site, t: Date.now() })
 
   const { location: geoLocation, loading: geoLoading, error: geoError, request: requestGeo } = useUserLocation()
 
@@ -46,8 +47,8 @@ export default function App() {
     setError(null)
     setResults(null)
     try {
-      const { durations, distances } = await fetchRoutes(origin, sites)
-      const best = getBestSites(durations, distances, sites, maxMinutes)
+      const { durations } = await fetchRoutes(origin, sites)
+      const best = getBestSites(durations, null, sites, maxMinutes)
       setResults(best)
     } catch (e) {
       setError(`Error al calcular rutas: ${e.message}`)
@@ -67,7 +68,7 @@ export default function App() {
         loading={loading}
         error={error}
         onCalculate={handleCalculate}
-        onSiteClick={setFocusSite}
+        onSiteClick={handleSiteClick}
         geoLoading={geoLoading}
         geoError={geoError}
         requestGeo={requestGeo}

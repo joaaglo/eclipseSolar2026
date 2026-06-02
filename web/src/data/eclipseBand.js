@@ -58,8 +58,11 @@ export const SOUTH_LIMIT = [
   [40.6833, -4.04],
 ]
 
-// Polygon: north limit forward + south limit reversed (all points)
+// Polygon clipped to lat ≤ 70°N — avoids Mercator distortion of polar points
+// which otherwise corrupts the polygon fill over Spain.
+// The western end closes at ~70°N in the mid-Atlantic, off the visible map.
+const clip70 = pts => pts.filter(([lat]) => lat <= 70)
 export const BAND_POLYGON = [
-  ...NORTH_LIMIT,
-  ...[...SOUTH_LIMIT].reverse(),
+  ...clip70(NORTH_LIMIT),
+  ...[...clip70(SOUTH_LIMIT)].reverse(),
 ]
