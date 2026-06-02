@@ -58,8 +58,10 @@ export const SOUTH_LIMIT = [
   [40.6833, -4.04],
 ]
 
-// Polygon vertices: north limit forward + south limit reversed
+// Polygon vertices: north limit → close at end of path → south limit reversed
+// The last south limit point (18:32) has anomalous coords due to sunset geometry — excluded
 export const BAND_POLYGON = [
   ...NORTH_LIMIT,
-  ...[...SOUTH_LIMIT].reverse(),
+  CENTERLINE[CENTERLINE.length - 1],
+  ...[...SOUTH_LIMIT.slice(0, -1)].reverse(),
 ]
