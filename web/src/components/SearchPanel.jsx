@@ -9,6 +9,8 @@ function formatMinutes(mins) {
   return `${h}h ${m}min`
 }
 
+const ELPAIS_URL = 'https://elpais.com/ciencia/2026-06-02/mapa-de-sitios-oficiales-para-ver-el-eclipse-total-de-sol-el-pais-actualiza-el-unico-buscador-de-puntos-de-observacion.html'
+
 export default function SearchPanel({
   origin, setOrigin,
   maxMinutes, setMaxMinutes,
@@ -21,80 +23,77 @@ export default function SearchPanel({
 }) {
   return (
     <div className="panel">
+
       <div className="panel__header">
         <h1 className="panel__title">Eclipse Solar 2026</h1>
         <p className="panel__subtitle">12 de agosto · España</p>
-        <p className="panel__desc">¿Cuál es el mejor sitio para ver el eclipse cerca de ti? Dinos de dónde sales y cuánto tiempo tienes — nosotros calculamos la mejor opción.</p>
+        <p className="panel__desc">
+          ¿Cuál es el mejor sitio cerca de ti para ver el eclipse?
+          Nosotros calculamos la mejor opción para ti.
+        </p>
       </div>
 
-      <div className="panel__section">
-        <label className="panel__label">Tu posición de salida</label>
-        <button
-          className="btn btn--secondary"
-          onClick={requestGeo}
-          disabled={geoLoading}
-        >
-          {geoLoading ? 'Localizando…' : '📍 Usar mi ubicación GPS'}
-        </button>
-        {origin && (
-          <p className="panel__coords">
-            {origin.lat.toFixed(4)}, {origin.lng.toFixed(4)}
-            <span className="panel__coords-hint"> · o haz clic en el mapa</span>
-          </p>
-        )}
-        {!origin && (
-          <p className="panel__hint">Haz clic en el mapa o usa el GPS</p>
-        )}
-        {geoError && <p className="panel__error">{geoError}</p>}
-      </div>
+      <div className="calc-block">
 
-      <div className="panel__section">
-        <label className="panel__label">
-          Tiempo máximo: <strong>{formatMinutes(maxMinutes)}</strong>
-        </label>
-        <input
-          type="range"
-          min={15}
-          max={300}
-          step={15}
-          value={maxMinutes}
-          onChange={e => setMaxMinutes(+e.target.value)}
-          className="panel__slider"
-        />
-        <div className="panel__slider-labels">
-          <span>15 min</span><span>5h</span>
+        <div className="calc-step">
+          <span className="calc-step__num">1</span>
+          <div className="calc-step__body">
+            <p className="calc-step__label">Dinos de dónde sales</p>
+            <button className="btn btn--secondary" onClick={requestGeo} disabled={geoLoading}>
+              {geoLoading ? 'Localizando…' : '📍 Usar mi ubicación GPS'}
+            </button>
+            {origin
+              ? <p className="panel__coords">{origin.lat.toFixed(4)}, {origin.lng.toFixed(4)}<span className="panel__coords-hint"> · o haz clic en el mapa</span></p>
+              : <p className="panel__hint">Haz clic en el mapa o usa el GPS</p>
+            }
+            {geoError && <p className="panel__error">{geoError}</p>}
+          </div>
         </div>
+
+        <div className="calc-step">
+          <span className="calc-step__num">2</span>
+          <div className="calc-step__body">
+            <p className="calc-step__label">¿Cuánto tiempo te quieres desplazar? <strong>{formatMinutes(maxMinutes)}</strong></p>
+            <input
+              type="range" min={15} max={300} step={15}
+              value={maxMinutes}
+              onChange={e => setMaxMinutes(+e.target.value)}
+              className="panel__slider"
+            />
+            <div className="panel__slider-labels"><span>15 min</span><span>5h</span></div>
+          </div>
+        </div>
+
+        <div className="calc-step calc-step--action">
+          <span className="calc-step__num">3</span>
+          <div className="calc-step__body">
+            <button className="btn btn--primary btn--full" onClick={onCalculate} disabled={!origin || loading}>
+              {loading ? 'Calculando…' : 'Calcular'}
+            </button>
+          </div>
+        </div>
+
+        {error && <p className="panel__error panel__error--pad">{error}</p>}
+
+        <ResultsList results={results} onSiteClick={onSiteClick} />
+
       </div>
 
-      <button
-        className="btn btn--primary"
-        onClick={onCalculate}
-        disabled={!origin || loading}
-      >
-        {loading ? 'Calculando…' : 'Calcular mejores sitios'}
-      </button>
+      <ShareButton origin={origin} maxMinutes={maxMinutes} topSite={results?.top?.[0]} />
 
-      {error && <p className="panel__error">{error}</p>}
-
-      <ResultsList results={results} onSiteClick={onSiteClick} />
-
-      <ShareButton
-        origin={origin}
-        maxMinutes={maxMinutes}
-        topSite={results?.top?.[0]}
-      />
-
-      <div className="panel__section panel__layers">
-        <label className="panel__label">Capas del mapa</label>
+      <div className="panel__layers">
+        <p className="panel__layers-title">Capas del mapa</p>
         <label className="panel__checkbox">
           <input type="checkbox" checked={showBand} onChange={e => setShowBand(e.target.checked)} />
           Banda de totalidad
         </label>
         <label className="panel__checkbox">
           <input type="checkbox" checked={showSites} onChange={e => setShowSites(e.target.checked)} />
-          Sitios de observación
+          Sitios oficiales de observación&nbsp;
+          <a href={ELPAIS_URL} target="_blank" rel="noopener noreferrer" className="panel__link">(fuente: El País ↗)</a>
         </label>
       </div>
+
     </div>
   )
 }

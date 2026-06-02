@@ -3,13 +3,13 @@ import { useState } from 'react'
 export default function ShareButton({ origin, maxMinutes, topSite }) {
   const [copied, setCopied] = useState(false)
 
-  if (!origin) return null
-
   const url = new URL(window.location.href)
   url.search = ''
-  url.searchParams.set('lat', origin.lat.toFixed(5))
-  url.searchParams.set('lng', origin.lng.toFixed(5))
-  url.searchParams.set('maxmin', maxMinutes)
+  if (origin) {
+    url.searchParams.set('lat', origin.lat.toFixed(5))
+    url.searchParams.set('lng', origin.lng.toFixed(5))
+    url.searchParams.set('maxmin', maxMinutes)
+  }
   const shareUrl = url.toString()
 
   const whatsappText = topSite
