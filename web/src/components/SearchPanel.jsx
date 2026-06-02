@@ -43,17 +43,18 @@ export default function SearchPanel({
               {geoLoading ? 'Localizando…' : '📍 Usar mi ubicación GPS'}
             </button>
             {origin
-              ? <p className="panel__coords">{origin.lat.toFixed(4)}, {origin.lng.toFixed(4)}<span className="panel__coords-hint"> · o haz clic en el mapa</span></p>
+              ? <p className="panel__coords">{origin.lat.toFixed(4)}, {origin.lng.toFixed(4)}</p>
               : <p className="panel__hint">Haz clic en el mapa o usa el GPS</p>
             }
-            {geoError && <p className="panel__error">{geoError}</p>}
+            {geoError && !origin && <p className="panel__error">{geoError}</p>}
           </div>
         </div>
 
         <div className="calc-step">
           <span className="calc-step__num">2</span>
           <div className="calc-step__body">
-            <p className="calc-step__label">¿Cuánto tiempo te quieres desplazar? <strong>{formatMinutes(maxMinutes)}</strong></p>
+            <p className="calc-step__label">¿Cuánto tiempo te quieres desplazar?</p>
+            <p className="calc-step__time">{formatMinutes(maxMinutes)}</p>
             <input
               type="range" min={15} max={300} step={15}
               value={maxMinutes}

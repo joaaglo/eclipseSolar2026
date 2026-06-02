@@ -55,9 +55,7 @@ function SiteCard({ site, rank, bonus, onClick }) {
         <span className="site-card__duration">{site.duracion_totalidad}</span>
       </div>
       <div className="site-card__travel">
-        🚗 {formatTravel(site.travelSecs)}
-        {site.travelKm && ` · ${site.travelKm} km`}
-        &nbsp;·&nbsp;🅿️ {site.parking}
+        🚗 {formatTravel(site.travelSecs)}&nbsp;·&nbsp;🅿️ {site.parking}
       </div>
     </div>
   )
