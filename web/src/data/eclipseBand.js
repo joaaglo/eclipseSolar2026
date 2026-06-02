@@ -58,12 +58,11 @@ export const SOUTH_LIMIT = [
   [40.6833, -4.04],
 ]
 
-// Polygon: north limit (0-43, up to 18:28) → centerline[43] → south limit (0-43) reversed
-// Rows 18:30 and 18:32 are excluded: at sunset the shadow hits Earth at a grazing angle
-// so north/south limit coords diverge dramatically and create artifacts in the polygon.
-// The eclipse IS visible in Aragón/Cataluña but the polygon closes cleanly at ~18:28.
+// Polygon: all north limit points → south limit reversed (last 2 anomalous rows excluded)
+// At 18:30-18:32 the shadow grazes Earth at sunset causing extreme coord divergence.
+// Keeping all NORTH_LIMIT points is critical — removing the easternmost one (Barcelona)
+// causes a self-intersecting polygon that Leaflet won't fill.
 export const BAND_POLYGON = [
-  ...NORTH_LIMIT.slice(0, 44),
-  CENTERLINE[43],
+  ...NORTH_LIMIT,
   ...[...SOUTH_LIMIT.slice(0, 44)].reverse(),
 ]
