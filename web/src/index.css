@@ -319,6 +319,20 @@ html, body, #root {
   margin-top: 4px;
 }
 
+.site-card__dur-block {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1px;
+}
+
+.site-card__dur-label {
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: #aaa;
+}
+
 .site-card__duration {
   font-weight: 700;
   color: #c0392b;

@@ -52,7 +52,10 @@ function SiteCard({ site, rank, bonus, onClick }) {
       </div>
       <div className="site-card__meta">
         <span>{site.municipio}</span>
-        <span className="site-card__duration">{site.duracion_totalidad}</span>
+        <div className="site-card__dur-block">
+          <span className="site-card__dur-label">eclipse total</span>
+          <span className="site-card__duration">🌑 {site.duracion_totalidad}</span>
+        </div>
       </div>
       <div className="site-card__travel">
         🚗 {formatTravel(site.travelSecs)}&nbsp;·&nbsp;🅿️ {site.parking}
