@@ -58,10 +58,12 @@ export const SOUTH_LIMIT = [
   [40.6833, -4.04],
 ]
 
-// Polygon vertices: north limit → close at end of path → south limit reversed
-// The last south limit point (18:32) has anomalous coords due to sunset geometry — excluded
+// Polygon: north limit (0-43, up to 18:28) → centerline[43] → south limit (0-43) reversed
+// Rows 18:30 and 18:32 are excluded: at sunset the shadow hits Earth at a grazing angle
+// so north/south limit coords diverge dramatically and create artifacts in the polygon.
+// The eclipse IS visible in Aragón/Cataluña but the polygon closes cleanly at ~18:28.
 export const BAND_POLYGON = [
-  ...NORTH_LIMIT,
-  CENTERLINE[CENTERLINE.length - 1],
-  ...[...SOUTH_LIMIT.slice(0, -1)].reverse(),
+  ...NORTH_LIMIT.slice(0, 44),
+  CENTERLINE[43],
+  ...[...SOUTH_LIMIT.slice(0, 44)].reverse(),
 ]
