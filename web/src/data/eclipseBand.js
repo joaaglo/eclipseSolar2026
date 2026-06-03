@@ -58,11 +58,120 @@ export const SOUTH_LIMIT = [
   [40.6833, -4.04],
 ]
 
-// Polygon clipped to lat ≤ 70°N — avoids Mercator distortion of polar points
-// which otherwise corrupts the polygon fill over Spain.
-// The western end closes at ~70°N in the mid-Atlantic, off the visible map.
-const clip70 = pts => pts.filter(([lat]) => lat <= 70)
+// Catmull-Rom spline: genera puntos interpolados suaves entre los puntos de control.
+// Pasa exactamente por todos los puntos de control. n = puntos por segmento.
+function catmullRom(pts, n = 10) {
+  if (pts.length < 2) return pts
+  const result = []
+  for (let i = 0; i < pts.length - 1; i++) {
+    const p0 = pts[Math.max(0, i - 1)]
+    const p1 = pts[i]
+    const p2 = pts[i + 1]
+    const p3 = pts[Math.min(pts.length - 1, i + 2)]
+    for (let j = 0; j < n; j++) {
+      const t = j / n
+      const t2 = t * t
+      const t3 = t2 * t
+      const lat = 0.5 * (
+        2 * p1[0] +
+        (-p0[0] + p2[0]) * t +
+        (2*p0[0] - 5*p1[0] + 4*p2[0] - p3[0]) * t2 +
+        (-p0[0] + 3*p1[0] - 3*p2[0] + p3[0]) * t3
+      )
+      const lng = 0.5 * (
+        2 * p1[1] +
+        (-p0[1] + p2[1]) * t +
+        (2*p0[1] - 5*p1[1] + 4*p2[1] - p3[1]) * t2 +
+        (-p0[1] + 3*p1[1] - 3*p2[1] + p3[1]) * t3
+      )
+      result.push([lat, lng])
+    }
+  }
+  result.push(pts[pts.length - 1])
+  return result
+}
+
+const clip64 = pts => pts.filter(([lat]) => lat <= 64)
+
+// Cap oeste: lat exacta de S26 (44.8317°N) — punto natural donde el cap queda horizontal
+const CAP_WEST_LAT = 44.8317
+const clipCap = pts => pts.filter(([lat]) => lat <= CAP_WEST_LAT)
+
+// ---------------------------------------------------------------------------
+// Cap este: S★ via recta slope-0.7 desde N21 × curva S extrapolada (sin S23)
+// S23 se incluye como punto de control intermedio en la curva sur.
+// ---------------------------------------------------------------------------
+
+function polyFitLng(points) {
+  let s0=0,s1=0,s2=0,s3=0,s4=0,r0=0,r1=0,r2=0
+  for (const [lat,lng] of points) {
+    s0++; s1+=lat; s2+=lat*lat; s3+=lat*lat*lat; s4+=lat*lat*lat*lat
+    r0+=lng; r1+=lat*lng; r2+=lat*lat*lng
+  }
+  const M=[[s0,s1,s2,r0],[s1,s2,s3,r1],[s2,s3,s4,r2]]
+  for (let col=0;col<3;col++) {
+    let piv=col
+    for (let r=col+1;r<3;r++) if (Math.abs(M[r][col])>Math.abs(M[piv][col])) piv=r
+    ;[M[col],M[piv]]=[M[piv],M[col]]
+    for (let r=col+1;r<3;r++) {
+      const f=M[r][col]/M[col][col]
+      for (let j=col;j<=3;j++) M[r][j]-=f*M[col][j]
+    }
+  }
+  const x=[0,0,0]
+  for (let i=2;i>=0;i--) {
+    x[i]=M[i][3]
+    for (let j=i+1;j<3;j++) x[i]-=M[i][j]*x[j]
+    x[i]/=M[i][i]
+  }
+  return lat => x[0]+x[1]*lat+x[2]*lat*lat
+}
+
+function intersect07(lngS) {
+  const N21     = NORTH_LIMIT[NORTH_LIMIT.length - 1]
+  const lngLine = lat => N21[1] + 0.7 * (lat - N21[0])
+  let prevLat = 43, prevDiff = lngLine(43) - lngS(43)
+  for (let lat = 42.9; lat > 34; lat -= 0.05) {
+    const diff = lngLine(lat) - lngS(lat)
+    if (prevDiff * diff < 0) {
+      const latInt = prevLat + (prevDiff / (prevDiff - diff)) * (lat - prevLat)
+      return [latInt, lngS(latInt)]
+    }
+    prevLat = lat; prevDiff = diff
+  }
+  return null
+}
+
+// S1…S22 (sin S23)
+const S_VALID = clip64(SOUTH_LIMIT).slice(0, -1)
+const S22     = S_VALID[S_VALID.length - 1]   // [42.2633, -7.2367]
+
+// 6 candidatos P3..P8 — fit cuadrático con los últimos N puntos de S1…S22
+export const EAST_CAP_CANDIDATES = [3, 4, 5, 6, 7, 8].map(nPts => {
+  const lngS  = polyFitLng(S_VALID.slice(-nPts))
+  const point = intersect07(lngS) ?? [38.2, 1.57]
+  const curve = []
+  const step  = (point[0] - S22[0]) / 20
+  for (let i = 0; i <= 20; i++) curve.push([S22[0] + i*step, lngS(S22[0] + i*step)])
+  return { nPts, point, curve }
+})
+
+// Candidato activo: P3 (mejor según usuario)
+const ACTIVE_N = 3
+export const EAST_CAP_SOUTH = EAST_CAP_CANDIDATES.find(c => c.nPts === ACTIVE_N).point
+
+// Sur corregido: S1…S22 + puntos de la curva P3 (la banda sigue la extrapolación P3)
+const activeCandidate = EAST_CAP_CANDIDATES.find(c => c.nPts === ACTIVE_N)
+const southCorrected = [...S_VALID, ...activeCandidate.curve]
+
+// Curvas suaves Catmull-Rom
+const NORTH_SMOOTH = catmullRom(clip64(NORTH_LIMIT))
+const SOUTH_SMOOTH = catmullRom(southCorrected)
+
+export const CENTERLINE_SMOOTH = catmullRom(clip64(CENTERLINE))
+export { NORTH_SMOOTH, SOUTH_SMOOTH }
+
 export const BAND_POLYGON = [
-  ...clip70(NORTH_LIMIT),
-  ...[...clip70(SOUTH_LIMIT)].reverse(),
+  ...clipCap(NORTH_SMOOTH),
+  ...[...clipCap(SOUTH_SMOOTH)].reverse(),
 ]

@@ -1,5 +1,12 @@
-import { Polygon, Polyline } from 'react-leaflet'
-import { BAND_POLYGON, CENTERLINE } from '../data/eclipseBand'
+import { Polygon, Polyline, Marker } from 'react-leaflet'
+import { divIcon } from 'leaflet'
+import { BAND_POLYGON, CENTERLINE_SMOOTH, EAST_CAP_SOUTH } from '../data/eclipseBand'
+
+const ptIcon = (label, color) => divIcon({
+  html: `<div style="font-size:11px;font-weight:900;color:${color};line-height:1;white-space:nowrap">✕ ${label}</div>`,
+  iconAnchor: [8, 8],
+  className: '',
+})
 
 export default function EclipseBandLayer() {
   return (
@@ -15,7 +22,7 @@ export default function EclipseBandLayer() {
         }}
       />
       <Polyline
-        positions={CENTERLINE}
+        positions={CENTERLINE_SMOOTH}
         pathOptions={{
           color: '#1a3a6b',
           weight: 1.5,
@@ -23,6 +30,8 @@ export default function EclipseBandLayer() {
           dashArray: '6 4',
         }}
       />
+      {/* DEBUG — S★ */}
+      <Marker position={EAST_CAP_SOUTH} icon={ptIcon('S★', '#00a040')} />
     </>
   )
 }
