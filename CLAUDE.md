@@ -26,10 +26,10 @@ pip install openpyxl pandas
 
 ## Arquitectura
 
-Un único script **`eclipse.py`** con funciones `cmd_routes()`, `cmd_centerline()`, `cmd_xlsx()` y CLI via argparse. Lee los sitios de **`sites.json`** (190 entradas con espacio, municipio, tipo, capacidad, parking, inicio_totalidad, duracion_totalidad, lat, lng).
+Un único script **`eclipse.py`** con funciones `cmd_routes()`, `cmd_centerline()`, `cmd_xlsx()` y CLI via argparse. Lee los sitios de **`elpais_eclipse2026_sitiosOficiales.json`** (190 entradas con espacio, municipio, tipo, capacidad, parking, inicio_totalidad, duracion_totalidad, lat, lng).
 
-- **`sites.json`** — datos fuente de los 190 sitios oficiales (El País / widget junio 2026, basado en IGN/OAN). Duración de totalidad calculada por el IGN para las coordenadas exactas de cada sitio.
-- **`eclipse_sitios.csv`** — copia de referencia original, no se usa en el proceso.
+- **`elpais_eclipse2026_sitiosOficiales.json`** — datos fuente de los 190 sitios oficiales (El País / widget junio 2026, basado en IGN/OAN). Duración de totalidad calculada por el IGN para las coordenadas exactas de cada sitio.
+- **`elpais_eclipse2026_sitiosOficiales.csv`** — versión CSV de referencia (mismos datos sin coordenadas), no se usa en el proceso.
 - **`output/eclipse_sitios_rutas.csv`** — output generado con columnas: Espacio, Municipio, Tipo, Capacidad, Parking, Inicio totalidad, Duración totalidad, Lat, Lng, Dist_carretera_km, Tiempo_Maps, Dist_centerline_km.
 - **`output/eclipse_sitios_rutas.xlsx`** — ídem con formato Excel (filtros, cabecera azul, freeze pane).
 

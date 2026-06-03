@@ -20,7 +20,7 @@ export default function App() {
   const { location: geoLocation, loading: geoLoading, error: geoError, request: requestGeo } = useUserLocation()
 
   useEffect(() => {
-    fetch('/sites.json')
+    fetch('/elpais_eclipse2026_sitiosOficiales.json')
       .then(r => r.json())
       .then(setSites)
       .catch(() => setError('No se pudieron cargar los sitios'))

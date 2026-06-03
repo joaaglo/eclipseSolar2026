@@ -22,7 +22,7 @@ npm run dev
 
 ## Datos
 
-- Sitios de observación: `public/sites.json` (190 entradas, fuente El País / IGN)
+- Sitios de observación: `public/elpais_eclipse2026_sitiosOficiales.json` (190 entradas, fuente El País / IGN)
 - Banda de totalidad: `src/data/eclipseBand.js` (coordenadas NASA GSFC)
 - Rutas: OSRM public demo server (no comercial, sin API key)
 
